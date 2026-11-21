@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kontak Darurat — SiagaSehat</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/components.css" />
+</head>
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+  <header class="navbar">
+    <div class="container navbar__inner">
+      <a href="index.html" class="navbar__brand">
+        <span class="brand-icon">🛡️</span>
+        <span class="brand-name">SiagaSehat</span>
+      </a>
+      <nav class="navbar__links">
+        <a href="index.html" class="nav-link">Beranda</a>
+        <a href="panduan.html" class="nav-link">Panduan</a>
+        <a href="kontak.html" class="nav-link active">Kontak Darurat</a>
+      </nav>
+      <button class="navbar__toggle" id="navToggle" aria-label="Buka menu">&#9776;</button>
+    </div>
+    <nav class="navbar__mobile" id="navMobile">
+      <a href="index.html" class="nav-link">Beranda</a>
+      <a href="panduan.html" class="nav-link">Panduan</a>
+      <a href="kontak.html" class="nav-link active">Kontak Darurat</a>
+    </nav>
+  </header>
+
+  <!-- ===== PAGE HEADER ===== -->
+  <section class="page-header page-header--kontak">
+    <div class="container page-header__inner">
+      <h1 class="page-header__title">📞 Kontak Darurat</h1>
+      <p class="page-header__sub">Nomor dan informasi instansi darurat penting di Indonesia</p>
+    </div>
+  </section>
+
+  <!-- ===== TOOLBAR ===== -->
+  <section class="toolbar">
+    <div class="container toolbar__inner">
+      <!-- Search -->
+      <div class="search-box">
+        <span class="search-box__icon">🔍</span>
+        <input
+          type="search"
+          id="searchKontak"
+          class="search-box__input"
+          placeholder="Cari nama instansi, kota, atau nomor…"
+          autocomplete="off"
+        />
+      </div>
+      <!-- Filter Kategori Kontak -->
+      <div class="filter-group" id="filterKontak" role="group" aria-label="Filter kategori kontak">
+        <button class="filter-btn active" data-filter="semua">Semua</button>
+        <button class="filter-btn" data-filter="Polisi">🚔 Polisi</button>
+        <button class="filter-btn" data-filter="Pemadam Kebakaran">🚒 Pemadam</button>
+        <button class="filter-btn" data-filter="Medis/Ambulans">🚑 Medis</button>
+        <button class="filter-btn" data-filter="BPBD">🏛️ BPBD</button>
+        <button class="filter-btn" data-filter="SAR">⛑️ SAR/PMI</button>
+      </div>
+      <!-- Tombol Tambah -->
+      <button class="btn btn--primary" id="btnTambahKontak">+ Tambah Kontak</button>
+    </div>
+  </section>
+
+  <!-- ===== GRID KONTAK ===== -->
+  <main class="container page-main">
+    <div class="result-info" id="resultInfoKontak"></div>
+    <div class="card-grid card-grid--kontak" id="kontakGrid">
+      <!-- Kartu kontak dirender oleh kontak.js -->
+    </div>
+    <div class="empty-state" id="emptyStateKontak" hidden>
+      <div class="empty-state__icon">📭</div>
+      <h3 class="empty-state__title">Belum ada kontak darurat</h3>
+      <p class="empty-state__desc">Klik tombol <strong>"+ Tambah Kontak"</strong> untuk menambahkan kontak pertama.</p>
+    </div>
+  </main>
+
+  <!-- ===== MODAL FORM KONTAK ===== -->
+  <div class="modal-overlay" id="modalKontak" role="dialog" aria-modal="true" aria-labelledby="modalKontakTitle" hidden>
+    <div class="modal">
+      <div class="modal__header">
+        <h2 class="modal__title" id="modalKontakTitle">Tambah Kontak Darurat</h2>
+        <button class="modal__close" id="btnCloseModalKontak" aria-label="Tutup modal">&times;</button>
+      </div>
+      <div class="modal__body">
+        <form id="formKontak" novalidate>
+          <input type="hidden" id="kontakId" />
+
+          <div class="form-row">
+            <div class="form-group form-group--wide">
+              <label class="form-label" for="kontakNama">Nama Instansi <span class="required">*</span></label>
+              <input type="text" id="kontakNama" class="form-control" placeholder="Contoh: BPBD Provinsi DKI Jakarta" required maxlength="120" />
+              <span class="form-error" id="errKontakNama"></span>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="kontakKategori">Kategori <span class="required">*</span></label>
+              <select id="kontakKategori" class="form-control" required>
+                <option value="">— Pilih Kategori —</option>
+                <option value="Polisi">🚔 Polisi</option>
+                <option value="Pemadam Kebakaran">🚒 Pemadam Kebakaran</option>
+                <option value="Medis/Ambulans">🚑 Medis/Ambulans</option>
+                <option value="BPBD">🏛️ BPBD</option>
+                <option value="SAR">⛑️ SAR/PMI</option>
+              </select>
+              <span class="form-error" id="errKontakKategori"></span>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="kontakTelepon">Nomor Telepon <span class="required">*</span></label>
+              <input type="tel" id="kontakTelepon" class="form-control" placeholder="Contoh: 112 atau 021-5555555" required />
+              <span class="form-error" id="errKontakTelepon"></span>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="kontakWhatsapp">
+                Nomor WhatsApp
+                <small class="form-hint">(opsional, format: 628xxx)</small>
+              </label>
+              <input type="tel" id="kontakWhatsapp" class="form-control" placeholder="Contoh: 6281234567890" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group form-group--wide">
+              <label class="form-label" for="kontakAlamat">Alamat Lengkap <span class="required">*</span></label>
+              <input type="text" id="kontakAlamat" class="form-control" placeholder="Contoh: Jl. Medan Merdeka Selatan No.8-9" required />
+              <span class="form-error" id="errKontakAlamat"></span>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="kontakKota">Wilayah/Kota <span class="required">*</span></label>
+              <input type="text" id="kontakKota" class="form-control" placeholder="Contoh: Jakarta Pusat" required />
+              <span class="form-error" id="errKontakKota"></span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="kontakCatatan">Catatan Operasional <small class="form-hint">(opsional)</small></label>
+            <input type="text" id="kontakCatatan" class="form-control" placeholder="Contoh: Siaga 24 Jam / Hanya untuk wilayah DKI Jakarta" maxlength="200" />
+          </div>
+
+          <div class="modal__footer">
+            <button type="button" class="btn btn--ghost" id="btnCancelKontak">Batal</button>
+            <button type="submit" class="btn btn--primary" id="btnSubmitKontak">Simpan Kontak</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== MODAL KONFIRMASI HAPUS ===== -->
+  <div class="modal-overlay" id="modalHapusKontak" role="dialog" aria-modal="true" aria-labelledby="modalHapusKontakTitle" hidden>
+    <div class="modal modal--sm">
+      <div class="modal__header">
+        <h2 class="modal__title modal__title--danger" id="modalHapusKontakTitle">Hapus Kontak?</h2>
+        <button class="modal__close" id="btnCloseHapusKontak" aria-label="Tutup">&times;</button>
+      </div>
+      <div class="modal__body">
+        <p>Kontak <strong id="hapusNamaKontak"></strong> akan dihapus secara permanen.</p>
+        <div class="modal__footer">
+          <button type="button" class="btn btn--ghost" id="btnCancelHapusKontak">Batal</button>
+          <button type="button" class="btn btn--danger" id="btnKonfirmasiHapusKontak">Ya, Hapus</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== TOAST ===== -->
+  <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+  <script src="js/db.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/kontak.js"></script>
+</body>
+</html>

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Panduan Darurat — SiagaSehat</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/components.css" />
+</head>
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+  <header class="navbar">
+    <div class="container navbar__inner">
+      <a href="index.html" class="navbar__brand">
+        <span class="brand-icon">🛡️</span>
+        <span class="brand-name">SiagaSehat</span>
+      </a>
+      <nav class="navbar__links">
+        <a href="index.html" class="nav-link">Beranda</a>
+        <a href="panduan.html" class="nav-link active">Panduan</a>
+        <a href="kontak.html" class="nav-link">Kontak Darurat</a>
+      </nav>
+      <button class="navbar__toggle" id="navToggle" aria-label="Buka menu">&#9776;</button>
+    </div>
+    <nav class="navbar__mobile" id="navMobile">
+      <a href="index.html" class="nav-link">Beranda</a>
+      <a href="panduan.html" class="nav-link active">Panduan</a>
+      <a href="kontak.html" class="nav-link">Kontak Darurat</a>
+    </nav>
+  </header>
+
+  <!-- ===== PAGE HEADER ===== -->
+  <section class="page-header">
+    <div class="container page-header__inner">
+      <h1 class="page-header__title">📋 Panduan Darurat</h1>
+      <p class="page-header__sub">Koleksi artikel panduan mitigasi bencana dan penanganan kesehatan darurat</p>
+    </div>
+  </section>
+
+  <!-- ===== TOOLBAR ===== -->
+  <section class="toolbar">
+    <div class="container toolbar__inner">
+      <!-- Search -->
+      <div class="search-box">
+        <span class="search-box__icon">🔍</span>
+        <input
+          type="search"
+          id="searchPanduan"
+          class="search-box__input"
+          placeholder="Cari judul, tag, atau isi panduan…"
+          autocomplete="off"
+        />
+      </div>
+      <!-- Filter Kategori -->
+      <div class="filter-group" id="filterKategori" role="group" aria-label="Filter kategori">
+        <button class="filter-btn active" data-filter="semua">Semua</button>
+        <button class="filter-btn" data-filter="Bencana Alam">🌊 Bencana Alam</button>
+        <button class="filter-btn" data-filter="Kesehatan Darurat">🏥 Kesehatan</button>
+        <button class="filter-btn" data-filter="Kebakaran">🔥 Kebakaran</button>
+        <button class="filter-btn" data-filter="Pertolongan Pertama">🩹 P3K</button>
+      </div>
+      <!-- Tombol Tambah -->
+      <button class="btn btn--primary" id="btnTambahPanduan">+ Tambah Panduan</button>
+    </div>
+  </section>
+
+  <!-- ===== GRID ARTIKEL ===== -->
+  <main class="container page-main">
+    <div class="result-info" id="resultInfo"></div>
+    <div class="card-grid" id="panduanGrid">
+      <!-- Kartu artikel dirender oleh panduan.js -->
+    </div>
+    <div class="empty-state" id="emptyState" hidden>
+      <div class="empty-state__icon">📭</div>
+      <h3 class="empty-state__title">Belum ada artikel panduan</h3>
+      <p class="empty-state__desc">Klik tombol <strong>"+ Tambah Panduan"</strong> untuk menambahkan artikel pertama.</p>
+    </div>
+  </main>
+
+  <!-- ===== MODAL FORM PANDUAN ===== -->
+  <div class="modal-overlay" id="modalPanduan" role="dialog" aria-modal="true" aria-labelledby="modalPanduanTitle" hidden>
+    <div class="modal">
+      <div class="modal__header">
+        <h2 class="modal__title" id="modalPanduanTitle">Tambah Panduan</h2>
+        <button class="modal__close" id="btnCloseModalPanduan" aria-label="Tutup modal">&times;</button>
+      </div>
+      <div class="modal__body">
+        <form id="formPanduan" novalidate>
+          <input type="hidden" id="panduanId" />
+
+          <div class="form-group">
+            <label class="form-label" for="panduanJudul">Judul Panduan <span class="required">*</span></label>
+            <input type="text" id="panduanJudul" class="form-control" placeholder="Contoh: Cara Evakuasi Saat Banjir" required maxlength="120" />
+            <span class="form-error" id="errJudul"></span>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="panduanKategori">Kategori <span class="required">*</span></label>
+              <select id="panduanKategori" class="form-control" required>
+                <option value="">— Pilih Kategori —</option>
+                <option value="Bencana Alam">🌊 Bencana Alam</option>
+                <option value="Kesehatan Darurat">🏥 Kesehatan Darurat</option>
+                <option value="Kebakaran">🔥 Kebakaran</option>
+                <option value="Pertolongan Pertama">🩹 Pertolongan Pertama</option>
+              </select>
+              <span class="form-error" id="errKategori"></span>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="panduanUrgensi">Tingkat Urgensi <span class="required">*</span></label>
+              <select id="panduanUrgensi" class="form-control" required>
+                <option value="">— Pilih Urgensi —</option>
+                <option value="Rendah">🟢 Rendah</option>
+                <option value="Sedang">🟡 Sedang</option>
+                <option value="Tinggi">🔴 Tinggi</option>
+              </select>
+              <span class="form-error" id="errUrgensi"></span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="panduanTag">Tag <small class="form-hint">(pisahkan dengan koma)</small></label>
+            <input type="text" id="panduanTag" class="form-control" placeholder="Contoh: banjir, evakuasi, keselamatan" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="panduanGambar">URL Gambar <small class="form-hint">(opsional — kosongkan untuk gambar bawaan)</small></label>
+            <input type="url" id="panduanGambar" class="form-control" placeholder="https://contoh.com/gambar.jpg" />
+            <span class="form-error" id="errGambar"></span>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group form-group--wide">
+              <label class="form-label" for="panduanSumberUrl">
+                🔗 Tautan Sumber Resmi
+                <small class="form-hint">(opsional)</small>
+              </label>
+              <input type="url" id="panduanSumberUrl" class="form-control" placeholder="https://bnpb.go.id/artikel/..." />
+              <span class="form-error" id="errSumberUrl"></span>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="panduanSumberNama">
+                🏛️ Nama Instansi Sumber
+                <small class="form-hint">(opsional)</small>
+              </label>
+              <input type="text" id="panduanSumberNama" class="form-control" placeholder="Contoh: BNPB, Kemenkes RI, PMI" maxlength="80" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="panduanIsi">Isi Panduan <span class="required">*</span></label>
+            <textarea id="panduanIsi" class="form-control form-control--textarea" rows="8"
+              placeholder="Tuliskan langkah-langkah penanganan secara berurutan…" required></textarea>
+            <span class="form-error" id="errIsi"></span>
+          </div>
+
+          <div class="modal__footer">
+            <button type="button" class="btn btn--ghost" id="btnCancelPanduan">Batal</button>
+            <button type="submit" class="btn btn--primary" id="btnSubmitPanduan">Simpan Panduan</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== MODAL DETAIL PANDUAN ===== -->
+  <div class="modal-overlay" id="modalDetail" role="dialog" aria-modal="true" aria-labelledby="modalDetailTitle" hidden>
+    <div class="modal modal--wide">
+      <div class="modal__header">
+        <h2 class="modal__title" id="modalDetailTitle">Detail Panduan</h2>
+        <button class="modal__close" id="btnCloseDetail" aria-label="Tutup">&times;</button>
+      </div>
+      <div class="modal__body" id="modalDetailBody">
+        <!-- Diisi oleh panduan.js -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== MODAL KONFIRMASI HAPUS ===== -->
+  <div class="modal-overlay" id="modalHapus" role="dialog" aria-modal="true" aria-labelledby="modalHapusTitle" hidden>
+    <div class="modal modal--sm">
+      <div class="modal__header">
+        <h2 class="modal__title modal__title--danger" id="modalHapusTitle">Hapus Panduan?</h2>
+        <button class="modal__close" id="btnCloseHapus" aria-label="Tutup">&times;</button>
+      </div>
+      <div class="modal__body">
+        <p>Artikel <strong id="hapusJudul"></strong> akan dihapus secara permanen. Tindakan ini tidak dapat dibatalkan.</p>
+        <div class="modal__footer">
+          <button type="button" class="btn btn--ghost" id="btnCancelHapus">Batal</button>
+          <button type="button" class="btn btn--danger" id="btnKonfirmasiHapus">Ya, Hapus</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== TOAST ===== -->
+  <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+  <script src="js/db.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/panduan.js"></script>
+</body>
+</html>
